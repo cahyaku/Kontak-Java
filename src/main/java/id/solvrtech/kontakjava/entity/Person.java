@@ -1,14 +1,18 @@
 package id.solvrtech.kontakjava.entity;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Person {
     // set private
     private int id;
     private String name;
     private int phone;
 
+//    private int personId;
+    private static int personId = 0;
     // Sama seperti saat membuat small bank bagian account.
-    public Person(String name, int phone) {
-        this.id = id++;
+    public Person( String name, int phone) {
+        this.id = personId++;
         this.name = name;
         this.phone = phone;
     }
