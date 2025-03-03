@@ -33,35 +33,20 @@ public class App {
             switch (choice) {
                 case 1:
                     System.out.println("======== All persons data ========");
-                    // Ini untuk mendapatkan semua persons, yang akan di-loop dan ditampilkan pada show all persons.
-                    List<Person> persons = personService.getAllPersons();
-                    int number = 1;
-                    for (Person person : persons) {
-                        // Jika seperti ini hanya akan menampilkan kode aneh, mungkin itu kode objeknya
-                        // Untuk mendapatkan namenya maka maka di perlukan mengakases method getternya.
-                        // System.out.println(person);
-                        System.out.println(number + ".  Name: " + person.getName().toLowerCase(Locale.ROOT));
-                        System.out.println("    Phone number: " + person.getPhone());
-                        System.out.println("id: " + person.getId());
-                        System.out.println("-----------------");
-                        number++;
-                    }
-//                    scanner.nextLine();
+                    personService.showPersons();
                     pressAnyKeyToContinue();
                     continue;
 
                 case 2:
                     System.out.println("======== Create new person ========");
-                    String name = readLineAsString("Enter name: ");
-                    int phone = readLineAsInt("Enter phone number:");
-                    personService.createPerson(name, phone);
+                    personService.createPerson();
                     pressAnyKeyToContinue();
                     continue;
 
                 case 3:
                     System.out.println("======== Edit person ========");
                     int id = readLineAsInt("Enter ID of person to edit: ");
-                    String updateName = readLineAsString("Enter name:");
+                    String updateName = readLineAsString("Enter name:", null);
                     int updatePhone = readLineAsInt("Enter phone number:");
                     personService.updatePerson(id, updateName, updatePhone);
                     pressAnyKeyToContinue();

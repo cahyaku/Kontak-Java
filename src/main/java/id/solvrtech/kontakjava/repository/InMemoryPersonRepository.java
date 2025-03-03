@@ -1,4 +1,5 @@
 package id.solvrtech.kontakjava.repository;
+
 import id.solvrtech.kontakjava.entity.Person;
 
 import java.util.ArrayList;
@@ -69,9 +70,10 @@ public class InMemoryPersonRepository implements PersonRepository {
 //        }
 //        return person;
 //        person = getById(person.getId());
+//        if (person.getId() != -1) {
         person.setName(person.getName());
         person.setPhone(person.getPhone());
-
+//        }
 //
 //        <Person> existingPerson = persons.stream()
 //                .filter(p -> p.getId() == person.getId())
@@ -88,7 +90,7 @@ public class InMemoryPersonRepository implements PersonRepository {
 
     @Override
     public void deleteById(int id) {
-    persons.removeIf(person -> person.getId() == id);
+        persons.removeIf(person -> person.getId() == id);
     }
 
 
