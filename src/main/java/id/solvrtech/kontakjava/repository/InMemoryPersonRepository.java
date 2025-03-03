@@ -4,7 +4,6 @@ import id.solvrtech.kontakjava.entity.Person;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class InMemoryPersonRepository implements PersonRepository {
     // Ini untuk append data ke dalam List objek person.
@@ -16,8 +15,7 @@ public class InMemoryPersonRepository implements PersonRepository {
      */
     @Override
     public List<Person> getAll() {
-        return new ArrayList<>(persons);
-//        return List.of(persons.toArray(new Person[0]));
+        return this.persons;
     }
 
     @Override
@@ -31,9 +29,6 @@ public class InMemoryPersonRepository implements PersonRepository {
 
         // Stream() adalah fungsi yang digunakan untuk melakukan operasi seperti pemetaan, penyaringan,
         // dan pengurangan pada kumpulan data.
-
-//        persons = persons.stream().filter(person -> person.getId() == id).collect(Collectors.toList());
-
 //        return persons.stream()
 //                .filter(person -> person.getId() == id)
 //                .findFirst()
@@ -42,56 +37,48 @@ public class InMemoryPersonRepository implements PersonRepository {
 
     @Override
     public List<Person> getByName(String name) {
-        // ga tau ini untuk apa, baru coba saja.
-        persons.stream().filter(person -> person.getName().equals(name)).findFirst().orElse(null);
-        return persons;
-//        return persons.stream().filter(person -> person.getName() == name).findFirst().orElse(null);
-//        return List.of();
+        // Menggunakan fungsi toList(), karena jumlah data yang ditemukan bisa lebih dari satu.
+        return persons.stream().filter(person -> person.getName().equalsIgnoreCase(name)).toList();
+
+        // return persons.stream().filter(person -> person.getName() == name).findFirst().orElse(null);
     }
 
     @Override
     public List<Person> getByPhone(String phone) {
-        return List.of();
+//        return persons.stream().filter(person -> person.getPhone().equalsIgnoreCase(phone)).toList();
+//        return persons.stream().filter(person -> person.getPhone());
+//        return persons.stream().filter(person -> person.getPhone().toList(););
+        return null;
+
     }
 
     @Override
     public Person create(Person person) {
-        // ini untuk menambahkan objek person kedalam list
+        // ini untuk mendapatkan id persons
+        if (persons.isEmpty()) {
+            person.setId(0);
+        } else {
+            person.setId(persons.get(persons.size() - 1).getId() + 1);
+        }
+
         persons.add(person);
         return person;
     }
 
     @Override
-    public Person update(Person person) {
-//        persons
-//          if (persons.get(person.getId()) != null) {
-//            person.setName(person.getName());
-//            person.setPhone(person.getPhone());
-//        }
-//        return person;
-//        person = getById(person.getId());
-//        if (person.getId() != -1) {
-        person.setName(person.getName());
-        person.setPhone(person.getPhone());
-//        }
-//
-//        <Person> existingPerson = persons.stream()
-//                .filter(p -> p.getId() == person.getId())
-//                .findFirst();
-//
-//        if (existingPerson.isPresent()) {
-//            existingPerson.get().setName(person.getName());
-//            existingPerson.get().setPhone(person.getPhone());
-//            return existingPerson.get();
-//        }
-//        return null;
-        return person;
+    public Person update(int id, Person person) {
+        for (Person p : persons) {
+            if (p.getId() == id) {
+                p.setName(person.getName());
+                p.setPhone(person.getPhone());
+                return p;
+            }
+        }
+        return null;
     }
 
     @Override
     public void deleteById(int id) {
         persons.removeIf(person -> person.getId() == id);
     }
-
-
 }

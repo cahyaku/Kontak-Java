@@ -8,11 +8,8 @@ public class Person {
     private String name;
     private int phone;
 
-//    private int personId;
-    private static int personId = 0;
     // Sama seperti saat membuat small bank bagian account.
-    public Person( String name, int phone) {
-        this.id = personId++;
+    public Person(String name, int phone) {
         this.name = name;
         this.phone = phone;
     }

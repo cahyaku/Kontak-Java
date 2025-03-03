@@ -1,107 +1,76 @@
 package id.solvrtech.kontakjava.service;
 
 import id.solvrtech.kontakjava.entity.Person;
+import id.solvrtech.kontakjava.repository.InMemoryPersonRepository;
 import id.solvrtech.kontakjava.repository.PersonRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static id.solvrtech.kontakjava.helper.TerminalHelper.readLineAsInt;
-import static id.solvrtech.kontakjava.helper.TerminalHelper.readLineAsString;
+import static id.solvrtech.kontakjava.helper.Helper.readLineAsInt;
 
 public class PersonService {
-    private final PersonRepository personRepository;
+    private PersonRepository personRepository;
 
-    public PersonService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    public PersonService() {
+        this.personRepository = new InMemoryPersonRepository();
     }
 
-    public void createPerson() {
-        String name = readLineAsString("Enter name: ", "required");
-        int phone = readLineAsInt("Enter phone number:");
-        if (phone != -1) {
-            Person person = new Person(name, phone);
-
-            // Ini harus memanggil parameter yang ada di constructor,
-            // karena method create dalam Interface PersonRepository tidak di-set menjadi static
-            personRepository.create(person);
-        } else {
-            while (true) {
-                phone = readLineAsInt("Enter phone number:");
-                if (phone != -1) {
-                    Person person = new Person(name, phone);
-                    personRepository.create(person);
-                    break;
-                }
-            }
-        }
+    public ArrayList<Person> getAll() {
+        return (ArrayList<Person>) personRepository.getAll();
     }
 
-    //    public Person updatePerson(Person person)
-    public Person updatePerson(int id, String name, int phone) {
-        // ini untuk cek input person, apakah id-nya sama dan benar' ada maka lanjutkan dengan mengedit data.
-        Person person = personRepository.getById(id);
-        if (person != null) {
-            person.setName(name);
-            person.setPhone(phone);
-        } else {
-            System.out.println("Person not found...");
-        }
-        return personRepository.update(person);
+    public Person getPersonById(int id) {
+        return personRepository.getById(id);
     }
 
-    public Person DeletePerson(int id) {
-        Person person = personRepository.getById(id);
-        if (person != null) {
-            personRepository.deleteById(person.getId());
-        } else {
-            System.out.println("Person not found...");
-        }
-        return person;
+    public void createPerson(String name, int phone) {
+        Person person = new Person(name, phone);
+        personRepository.create(person);
+    }
+
+    public Person updatePerson(Person person, String name, String phone) {
+//        if (phone.equals("")) {
+//            person.setPhone(person.getPhone());
+//        } else {
+//            person.setPhone(Integer.parseInt(phone));
+//        }
+//
+//        if (name.equals("")) {
+//            person.setName(person.getName());
+//        } else {
+//            person.setName(name);
+//        }
+
+        person.setName(phone.equals("") ? person.getName() : name);
+        person.setPhone(phone.equals("") ? person.getPhone() : Integer.parseInt(phone));
+
+//        person.setName(name);
+//        person.setPhone(phone);
+        return personRepository.update(person.getId(), person);
+    }
+
+    public void deletePerson(Person person) {
+        personRepository.deleteById(person.getId());
     }
 
     public List<Person> getAllPersons() {
         return personRepository.getAll();
     }
 
-    public void showPersons() {
-        // Ini untuk mendapatkan semua persons, yang akan di-loop dan ditampilkan pada show all persons.
-        List<Person> persons = getAllPersons();
-        int number = 1;
-        if (!persons.isEmpty()) {
-            for (Person person : persons) {
-                // Jika seperti ini "System.out.println(person);" hanya akan menampilkan kode aneh, mungkin itu kode objeknya
-                // Untuk mendapatkan namenya maka maka diperlukan mengakases method getternya.
-                System.out.println(number + ".  Name: " + person.getName().toLowerCase(Locale.ROOT));
-                System.out.println("    Phone number: " + person.getPhone());
-                System.out.println("    Id: " + person.getId());
-                number++;
-            }
-        } else {
-            System.out.println("No persons found...");
-        }
-    }
-
-    public int validatePhoneNumber(String phoneNumber, String condition, int id) {
-        int phone = 0;
-
-        List<Person> persons = getAllPersons();
-
-        while (true) {
-            phone = readLineAsInt("Enter phone number:");
-            if (phone != -1) {
-                return phone;
-            } else if (phoneNumber.length() != 11) {
-                System.out.println("Invalid phone number, wajib 11 characters");
-            } else if (condition == "edit") {
-                return 1;
-            }
-        }
-    }
+    /**
+     * Buat method untuk search, agar bisa melakukan pencarian berdasarkan nama ataupun phone number.
+     */
 
     /**
-     * Untuk mengecek apakah phone number sudah ada yang pakai tidak.
+     * Buat validasi untuk name number saat create/edit new person data
+     */
+
+    /**
+     * Validasi untuk mengecek apakah phone number sudah ada yang pakai tidak.
+     * Semestinya bisa satu kali pengecekan, ketika melakukan edit dan create.
      *
      * @param phoneNumber
      * @param condition
