@@ -6,10 +6,10 @@ public class Person {
     // set private
     private int id;
     private String name;
-    private int phone;
+    private String phone;
 
     // Sama seperti saat membuat small bank bagian account.
-    public Person(String name, int phone) {
+    public Person(String name, String phone) {
         this.name = name;
         this.phone = phone;
     }
@@ -32,11 +32,11 @@ public class Person {
         this.name = name;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 }

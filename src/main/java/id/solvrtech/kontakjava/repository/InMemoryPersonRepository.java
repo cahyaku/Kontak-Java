@@ -4,6 +4,7 @@ import id.solvrtech.kontakjava.entity.Person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InMemoryPersonRepository implements PersonRepository {
     // Ini untuk append data ke dalam List objek person.
@@ -38,18 +39,27 @@ public class InMemoryPersonRepository implements PersonRepository {
     @Override
     public List<Person> getByName(String name) {
         // Menggunakan fungsi toList(), karena jumlah data yang ditemukan bisa lebih dari satu.
-        return persons.stream().filter(person -> person.getName().equalsIgnoreCase(name)).toList();
+//        return persons.stream().filter(person -> person.getName().equalsIgnoreCase(name)).toList();
+//        return persons.stream()
+//                .filter(person -> person.getName().equalsIgnoreCase(name))
+//                .collect(Collectors.toList());
 
+        return persons.stream().filter(person -> person.getName().contains(name))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+//        return persons.stream()
+//                .filter(person -> person.getName().equalsIgnoreCase(name))
+//                .collect(Collectors.toCollection(ArrayList::new));
+        
         // return persons.stream().filter(person -> person.getName() == name).findFirst().orElse(null);
     }
 
     @Override
     public List<Person> getByPhone(String phone) {
-//        return persons.stream().filter(person -> person.getPhone().equalsIgnoreCase(phone)).toList();
-//        return persons.stream().filter(person -> person.getPhone());
-//        return persons.stream().filter(person -> person.getPhone().toList(););
-        return null;
+        return persons.stream().filter(person -> person.getPhone().contains(phone))
+                .collect(Collectors.toCollection(ArrayList::new));
 
+//        return persons.stream().filter(person -> person.getPhone().equals(phone)).collect(Collectors.toList());
     }
 
     @Override
