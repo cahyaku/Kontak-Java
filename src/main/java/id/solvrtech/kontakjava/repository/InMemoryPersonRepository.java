@@ -38,15 +38,24 @@ public class InMemoryPersonRepository implements PersonRepository {
 
     @Override
     public List<Person> getByName(String name) {
-        // Menggunakan fungsi toList(), karena jumlah data yang ditemukan bisa lebih dari satu.
+        // 1. Menggunakan fungsi toList(), karena jumlah data yang ditemukan bisa lebih dari satu.
+        // 2. Fungsi method equalsIgnoreCase(), digunakan untuk mengabaikan lowercase atau pun uppercase.
+        // 3. Fungsi method contains() adalah untuk mencari kata dalam daftar atau url
+        // 4. Sedangkan equals() digunakan untuk membandingkan objek berdasarkan implementasi method (membandingkan konten objek). 
+
 //        return persons.stream().filter(person -> person.getName().equalsIgnoreCase(name)).toList();
 //        return persons.stream()
 //                .filter(person -> person.getName().equalsIgnoreCase(name))
 //                .collect(Collectors.toList());
 
-        return persons.stream().filter(person -> person.getName().contains(name))
-                .collect(Collectors.toCollection(ArrayList::new));
 
+        // return persons.stream().filter(person -> person.getName().contains(name))
+        //         .collect(Collectors.toCollection(ArrayList::new));
+
+        // return persons.stream().filter(person -> person.getName().contains(name).collect(Collectors.toList())));
+
+        return persons.stream().filter(person -> person.getName().contains(name)).collect(Collectors.toList());
+        
 //        return persons.stream()
 //                .filter(person -> person.getName().equalsIgnoreCase(name))
 //                .collect(Collectors.toCollection(ArrayList::new));
@@ -56,9 +65,14 @@ public class InMemoryPersonRepository implements PersonRepository {
 
     @Override
     public List<Person> getByPhone(String phone) {
-        return persons.stream().filter(person -> person.getPhone().contains(phone))
-                .collect(Collectors.toCollection(ArrayList::new));
+        // return persons.stream().filter(person -> person.getPhone().contains(phone))
+        //         .collect(Collectors.toCollection(ArrayList::new));
 
+
+                return persons.stream()
+                .filter(person -> person.getPhone().contains(phone))
+                .collect(Collectors.toList());
+                
 //        return persons.stream().filter(person -> person.getPhone().equals(phone)).collect(Collectors.toList());
     }
 

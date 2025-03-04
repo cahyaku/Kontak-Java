@@ -40,7 +40,7 @@ public class App {
                 case 2:
                     if (!allPersons.isEmpty()) {
                         System.out.println("======== Search Persons ========");
-                        String searchInput = readLineAsString("Enter search data, name or phone number:", "required");
+                        String searchInput = readLineAsString("Enter name or phone number:", "required");
                         ArrayList<Person> searchPerson = personService.searchPerson(searchInput);
                         showPersons(searchPerson);
                     } else {
