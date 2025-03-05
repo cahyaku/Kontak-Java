@@ -38,7 +38,7 @@ public class App {
                         System.out.println("People don't exist yet");
                     } else {
                         System.out.println("======== All persons data ========");
-                        showPersons(personService.getAllPersons());
+                        showPersons(personService.getAll());
                     }
 
                     pressAnyKeyToContinue();
@@ -48,7 +48,7 @@ public class App {
                     if (!isPersonExists) {
                         System.out.println("======== Search Persons ========");
                         String searchInput = readLineAsString("Enter name or phone number:", "required");
-                        ArrayList<Person> searchPerson = personService.searchPerson(searchInput);
+                        ArrayList<Person> searchPerson = personService.search(searchInput);
                         showPersons(searchPerson);
                     } else {
                         System.out.println("Empty search data");
@@ -60,7 +60,7 @@ public class App {
                     System.out.println("======== Create new person ========");
                     String name = readLineAsString("Enter name: ", "required");
                     String phone = askForPhoneNumber("required");
-                    boolean newPersonCreate = personService.createPerson(name, phone);
+                    boolean newPersonCreate = personService.create(name, phone);
                     if (newPersonCreate) {
                         System.out.println("New person could not be created, because phone number is already in use.");
                     } else {
@@ -74,7 +74,7 @@ public class App {
                     if (!isPersonExists) {
                         System.out.println("======== Edit person ========");
                         int id = readLineAsInt("Enter ID of person to edit: ", null);
-                        Person personToUpdate = personService.getPersonById(id); // cek id-nya.
+                        Person personToUpdate = personService.getById(id); // cek id-nya.
                         if (personToUpdate != null) {
                             System.out.println("--- Previous Data ---");
                             System.out.println("Name: " + personToUpdate.getName());
@@ -83,7 +83,7 @@ public class App {
 
                             String updateName = readLineAsString("Enter name:", null);
                             String updatePhone = askForPhoneNumber(null);
-                            boolean updatePerson = personService.updatePerson(personToUpdate, updateName, updatePhone);
+                            boolean updatePerson = personService.update(personToUpdate, updateName, updatePhone);
                             if (updatePerson) {
                                 System.out.println("Person data could not be updated, because phone number is already in use.");
                             } else {
@@ -102,7 +102,7 @@ public class App {
                     if (!isPersonExists) {
                         System.out.println("======== Delete person ========");
                         int personId = readLineAsInt("Enter ID of person to delete: ", null);
-                        Person personToDelete = personService.getPersonById(personId);
+                        Person personToDelete = personService.getById(personId);
 
                         if (personToDelete != null) {
                             System.out.println("--- Previous Data ---");
@@ -110,7 +110,7 @@ public class App {
                             System.out.println("Phone number: " + personToDelete.getPhone());
                             System.out.println("----------------------");
                             if (confirmYesNo()) {
-                                personService.deletePerson(personToDelete);
+                                personService.delete(personToDelete);
                                 System.out.println("Person has been deleted.");
                             } else {
                                 System.out.println("Cancel to delete person.");

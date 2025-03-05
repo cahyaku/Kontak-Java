@@ -13,15 +13,15 @@ public class PersonService {
         this.personRepository = new InMemoryPersonRepository();
     }
 
-    public List<Person> getAllPersons() {
+    public List<Person> getAll() {
         return personRepository.getAll();
     }
 
-    public Person getPersonById(int id) {
+    public Person getById(int id) {
         return personRepository.getById(id);
     }
 
-    public boolean createPerson(String name, String phone) {
+    public boolean create(String name, String phone) {
         boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, phone);
         if (checkPhoneNumber) {
             return true;
@@ -32,7 +32,7 @@ public class PersonService {
         return false;
     }
 
-    public boolean updatePerson(Person updatePerson, String name, String phone) {
+    public boolean update(Person updatePerson, String name, String phone) {
         boolean checkPhoneNumber = personRepository.isPhoneNumberExists(updatePerson.getId(), phone);
         if (checkPhoneNumber) {
             return true;
@@ -44,11 +44,11 @@ public class PersonService {
         return false;
     }
 
-    public void deletePerson(Person person) {
+    public void delete(Person person) {
         personRepository.deleteById(person.getId());
     }
 
-    public ArrayList<Person> searchPerson(String searchInput) {
+    public ArrayList<Person> search(String searchInput) {
         List<Person> personByName = personRepository.getByName(searchInput);
         List<Person> personByPhone = personRepository.getByPhone(searchInput);
         if (!personByName.isEmpty()) {
@@ -59,8 +59,8 @@ public class PersonService {
         return null;
     }
 
-    public boolean isListPersonEmpty() {
-        List<Person> persons = this.getAllPersons();
+    public boolean isEmpty() {
+        List<Person> persons = this.getAll();
         if (persons.isEmpty()) {
             return true;
         }
