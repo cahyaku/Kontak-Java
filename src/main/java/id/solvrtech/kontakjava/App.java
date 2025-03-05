@@ -93,6 +93,9 @@ public class App {
                             System.out.println("----------------------");
                             if (confirmYesNo()) {
                                 personService.deletePerson(personToDelete);
+                                System.out.println("Person with name ( " + personToDelete.getName() + " ) has been deleted!");
+                            } else {
+                                System.out.println("Cancel to delete person...");
                             }
                         } else {
                             System.out.println("Person not found...");

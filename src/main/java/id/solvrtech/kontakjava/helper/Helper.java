@@ -81,9 +81,9 @@ public class Helper {
     public static boolean confirmYesNo() {
         while (true) {
             String confirm = readLineAsString("Do you want to confirm your selection? [Y/N]:", null);
-            if (confirm.equals("Y")) {
+            if (confirm.equalsIgnoreCase("Y")) {
                 return true;
-            } else if (confirm.equals("N")) {
+            } else if (confirm.equalsIgnoreCase("N")) {
                 return false;
             } else {
                 System.out.println("Confirm your selection, please input Y or N");
