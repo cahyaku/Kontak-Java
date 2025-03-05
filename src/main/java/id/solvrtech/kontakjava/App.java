@@ -4,6 +4,8 @@ import id.solvrtech.kontakjava.entity.Person;
 import id.solvrtech.kontakjava.service.PersonService;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import static id.solvrtech.kontakjava.helper.Helper.*;
 
@@ -15,8 +17,6 @@ public class App {
 
     public void run() {
         PersonService personService = new PersonService();
-        ArrayList<Person> allPersons = personService.getAll();
-
         int choice;
         do {
             System.out.println("*********** \uD81A\uDE06\uD81A\uDE06 KontakJava V1 (In Memory) \uD81A\uDE06\uD81A\uDE06 ***********");
@@ -30,15 +30,22 @@ public class App {
             choice = readLineAsInt("Choose an option: ", null);
             System.out.println(" ");
 
+            boolean isPersonExists = personService.isListPersonEmpty();
             switch (choice) {
+
                 case 1:
-                    System.out.println("======== All persons data ========");
-                    showPersons(allPersons);
+                    if (isPersonExists) {
+                        System.out.println("People don't exist yet");
+                    } else {
+                        System.out.println("======== All persons data ========");
+                        showPersons(personService.getAllPersons());
+                    }
+
                     pressAnyKeyToContinue();
                     continue;
 
                 case 2:
-                    if (!allPersons.isEmpty()) {
+                    if (!isPersonExists) {
                         System.out.println("======== Search Persons ========");
                         String searchInput = readLineAsString("Enter name or phone number:", "required");
                         ArrayList<Person> searchPerson = personService.searchPerson(searchInput);
@@ -52,13 +59,19 @@ public class App {
                 case 3:
                     System.out.println("======== Create new person ========");
                     String name = readLineAsString("Enter name: ", "required");
-                    String phone = askForPhoneNumber(allPersons, null);
-                    personService.createPerson(name, phone);
+                    String phone = askForPhoneNumber("required");
+                    boolean newPersonCreate = personService.createPerson(name, phone);
+                    if (newPersonCreate) {
+                        System.out.println("New person could not be created, because phone number is already in use.");
+                    } else {
+                        System.out.println("New person has been created.");
+                    }
+
                     pressAnyKeyToContinue();
                     continue;
 
                 case 4:
-                    if (!allPersons.isEmpty()) {
+                    if (!isPersonExists) {
                         System.out.println("======== Edit person ========");
                         int id = readLineAsInt("Enter ID of person to edit: ", null);
                         Person personToUpdate = personService.getPersonById(id); // cek id-nya.
@@ -69,8 +82,13 @@ public class App {
                             System.out.println("----------------------");
 
                             String updateName = readLineAsString("Enter name:", null);
-                            String updatePhone = askForPhoneNumber(allPersons, personToUpdate.getId());
-                            personService.updatePerson(personToUpdate, updateName, updatePhone);
+                            String updatePhone = askForPhoneNumber(null);
+                            boolean updatePerson = personService.updatePerson(personToUpdate, updateName, updatePhone);
+                            if (updatePerson) {
+                                System.out.println("Person data could not be updated, because phone number is already in use.");
+                            } else {
+                                System.out.println("Person has been updated.");
+                            }
                         } else {
                             System.out.println("Person not found...");
                         }
@@ -81,7 +99,7 @@ public class App {
                     continue;
 
                 case 5:
-                    if (!allPersons.isEmpty()) {
+                    if (!isPersonExists) {
                         System.out.println("======== Delete person ========");
                         int personId = readLineAsInt("Enter ID of person to delete: ", null);
                         Person personToDelete = personService.getPersonById(personId);
@@ -112,5 +130,42 @@ public class App {
                     System.out.println("Select a valid option (1, 2, 3, 4, or 5)! ");
             }
         } while (choice != 6);
+    }
+    
+    public void showPersons(List<Person> persons) {
+        int number = 1;
+        if (persons == null || persons.isEmpty()) {
+            System.out.println("No persons found!");
+        } else {
+            for (Person person : persons) {
+                // Jika seperti ini "System.out.println(person);" hanya akan menampilkan kode aneh, mungkin itu kode objeknya
+                // Untuk mendapatkan namenya maka maka diperlukan mengakases method getternya.
+                System.out.println(number + ".  Name: " + person.getName().toLowerCase(Locale.ROOT));
+                System.out.println("    Phone number: " + person.getPhone());
+                System.out.println("    Id: " + person.getId());
+                number++;
+            }
+        }
+    }
+
+    /**
+     * Parameter condition untuk menentukan apakan wajib isi seperti saat create/ bisa string kosong saat edit.
+     */
+    public String askForPhoneNumber(String condition) {
+        while (true) {
+            String phone = readLineAsString("Enter phone number:", condition);
+
+            // Check jika inputan kosong
+            if (phone.isEmpty()) {
+                return phone; // Kembalikan string kosong jika tidak ada input
+            }
+
+            // Periksa apakah phone numbernya numerik
+            if (isNumeric(phone)) {
+                return phone; // Jika benar numerik kembalikan phone numbernya.
+            } else {
+                System.out.println("Please enter a valid phone number");
+            }
+        }
     }
 }

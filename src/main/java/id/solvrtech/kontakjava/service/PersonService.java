@@ -13,31 +13,39 @@ public class PersonService {
         this.personRepository = new InMemoryPersonRepository();
     }
 
-    public ArrayList<Person> getAll() {
-        return (ArrayList<Person>) personRepository.getAll();
+    public List<Person> getAllPersons() {
+        return personRepository.getAll();
     }
 
     public Person getPersonById(int id) {
         return personRepository.getById(id);
     }
 
-    public void createPerson(String name, String phone) {
+    public boolean createPerson(String name, String phone) {
+        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, phone);
+        if (checkPhoneNumber) {
+            return true;
+        }
+
         Person person = new Person(name, phone);
         personRepository.create(person);
+        return false;
     }
 
-    public Person updatePerson(Person updatePerson, String name, String phone) {
-        updatePerson.setName(name.equals("") ? updatePerson.getName() : name);
-        updatePerson.setPhone(phone.equals("") ? updatePerson.getPhone() : phone);
-        return personRepository.update(updatePerson.getId(), updatePerson);
+    public boolean updatePerson(Person updatePerson, String name, String phone) {
+        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(updatePerson.getId(), phone);
+        if (checkPhoneNumber) {
+            return true;
+        }
+        updatePerson.setName(name.trim().isEmpty() ? updatePerson.getName() : name);
+        updatePerson.setPhone(phone.trim().isEmpty() ? updatePerson.getPhone() : phone);
+
+        personRepository.update(updatePerson.getId(), updatePerson);
+        return false;
     }
 
     public void deletePerson(Person person) {
         personRepository.deleteById(person.getId());
-    }
-
-    public List<Person> getAllPersons() {
-        return personRepository.getAll();
     }
 
     public ArrayList<Person> searchPerson(String searchInput) {
@@ -49,6 +57,14 @@ public class PersonService {
             return (ArrayList<Person>) personByPhone;
         }
         return null;
+    }
+
+    public boolean isListPersonEmpty() {
+        List<Person> persons = this.getAllPersons();
+        if (persons.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 }
 

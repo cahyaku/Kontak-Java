@@ -15,8 +15,9 @@ public interface PersonRepository {
 
     Person create(Person person);
 
-    //    Person update(int id, Person person);
     Person update(int id, Person person);
 
     void deleteById(int id);
+
+    boolean isPhoneNumberExists(Integer id, String phoneNumber);
 }

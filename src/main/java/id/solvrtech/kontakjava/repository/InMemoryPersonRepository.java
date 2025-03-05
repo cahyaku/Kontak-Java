@@ -4,10 +4,11 @@ import id.solvrtech.kontakjava.entity.Person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class InMemoryPersonRepository implements PersonRepository {
-    // Ini untuk append data ke dalam List objek person.
+
     private List<Person> persons = new ArrayList<>();
 
     /**
@@ -27,53 +28,18 @@ public class InMemoryPersonRepository implements PersonRepository {
             }
         }
         return null;
-
-        // Stream() adalah fungsi yang digunakan untuk melakukan operasi seperti pemetaan, penyaringan,
-        // dan pengurangan pada kumpulan data.
-//        return persons.stream()
-//                .filter(person -> person.getId() == id)
-//                .findFirst()
-//                .orElse(null);
     }
 
     @Override
     public List<Person> getByName(String name) {
-        // 1. Menggunakan fungsi toList(), karena jumlah data yang ditemukan bisa lebih dari satu.
-        // 2. Fungsi method equalsIgnoreCase(), digunakan untuk mengabaikan lowercase atau pun uppercase.
-        // 3. Fungsi method contains() adalah untuk mencari kata dalam daftar atau url
-        // 4. Sedangkan equals() digunakan untuk membandingkan objek berdasarkan implementasi method (membandingkan konten objek). 
-
-//        return persons.stream().filter(person -> person.getName().equalsIgnoreCase(name)).toList();
-//        return persons.stream()
-//                .filter(person -> person.getName().equalsIgnoreCase(name))
-//                .collect(Collectors.toList());
-
-
-        // return persons.stream().filter(person -> person.getName().contains(name))
-        //         .collect(Collectors.toCollection(ArrayList::new));
-
-        // return persons.stream().filter(person -> person.getName().contains(name).collect(Collectors.toList())));
-
         return persons.stream().filter(person -> person.getName().contains(name)).collect(Collectors.toList());
-        
-//        return persons.stream()
-//                .filter(person -> person.getName().equalsIgnoreCase(name))
-//                .collect(Collectors.toCollection(ArrayList::new));
-        
-        // return persons.stream().filter(person -> person.getName() == name).findFirst().orElse(null);
     }
 
     @Override
     public List<Person> getByPhone(String phone) {
-        // return persons.stream().filter(person -> person.getPhone().contains(phone))
-        //         .collect(Collectors.toCollection(ArrayList::new));
-
-
-                return persons.stream()
+        return persons.stream()
                 .filter(person -> person.getPhone().contains(phone))
                 .collect(Collectors.toList());
-                
-//        return persons.stream().filter(person -> person.getPhone().equals(phone)).collect(Collectors.toList());
     }
 
     @Override
@@ -104,5 +70,19 @@ public class InMemoryPersonRepository implements PersonRepository {
     @Override
     public void deleteById(int id) {
         persons.removeIf(person -> person.getId() == id);
+    }
+
+    @Override
+    public boolean isPhoneNumberExists(Integer id, String phoneNumber) {
+        for (Person person : persons) {
+            boolean samePhoneNumber = Objects.equals(person.getPhone(), phoneNumber);
+            boolean sameId = Objects.equals(person.getId(), id);
+            if (id == null) { // saat id null hanya cek phone number, karena ini untuk create
+                return samePhoneNumber;
+            } else {
+                return (samePhoneNumber && !sameId);
+            }
+        }
+        return false;
     }
 }
