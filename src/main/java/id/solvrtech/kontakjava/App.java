@@ -111,6 +111,9 @@ public class App {
                             System.out.println("----------------------");
                             if (confirmYesNo()) {
                                 personService.deletePerson(personToDelete);
+                                System.out.println("Person has been deleted.");
+                            } else {
+                                System.out.println("Cancel to delete person.");
                             }
                         } else {
                             System.out.println("Person not found...");
@@ -131,15 +134,14 @@ public class App {
             }
         } while (choice != 6);
     }
-    
+
     public void showPersons(List<Person> persons) {
         int number = 1;
         if (persons == null || persons.isEmpty()) {
             System.out.println("No persons found!");
         } else {
             for (Person person : persons) {
-                // Jika seperti ini "System.out.println(person);" hanya akan menampilkan kode aneh, mungkin itu kode objeknya
-                // Untuk mendapatkan namenya maka maka diperlukan mengakases method getternya.
+                // Untuk mendapatkan namenya maka diperlukan mengakases method getternya.
                 System.out.println(number + ".  Name: " + person.getName().toLowerCase(Locale.ROOT));
                 System.out.println("    Phone number: " + person.getPhone());
                 System.out.println("    Id: " + person.getId());
@@ -149,7 +151,7 @@ public class App {
     }
 
     /**
-     * Parameter condition untuk menentukan apakan wajib isi seperti saat create/ bisa string kosong saat edit.
+     * Parameter condition untuk menentukan apakan wajib isi seperti saat create atau bisa string kosong saat edit.
      */
     public String askForPhoneNumber(String condition) {
         while (true) {
