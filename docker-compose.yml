@@ -11,7 +11,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: kontakjavadb
     ports:
-      - "33060:3306"
+      - "33061:3306"
 volumes:
   kontakjavadb:
     driver: local
