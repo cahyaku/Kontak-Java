@@ -30,7 +30,7 @@ public class App {
             choice = readLineAsInt("Choose an option: ", null);
             System.out.println(" ");
 
-            boolean isPersonExists = personService.isListPersonEmpty();
+            boolean isPersonExists = personService.isEmpty();
             switch (choice) {
 
                 case 1:
