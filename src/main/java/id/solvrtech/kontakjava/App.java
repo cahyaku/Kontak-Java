@@ -3,6 +3,7 @@ package id.solvrtech.kontakjava;
 import id.solvrtech.kontakjava.entity.Person;
 import id.solvrtech.kontakjava.service.PersonService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -38,9 +39,9 @@ public class App {
                         System.out.println("People don't exist yet");
                     } else {
                         System.out.println("======== All persons data ========");
+//                        personService.getAll();
                         showPersons(personService.getAll());
                     }
-
                     pressAnyKeyToContinue();
                     continue;
 
@@ -66,7 +67,6 @@ public class App {
                     } else {
                         System.out.println("New person has been created.");
                     }
-
                     pressAnyKeyToContinue();
                     continue;
 

@@ -9,7 +9,13 @@ public class Person {
     private String phone;
 
     // Sama seperti saat membuat small bank bagian account.
-    public Person(String name, String phone) {
+//    public Person(String name, String phone) {
+//        this.name = name;
+//        this.phone = phone;
+//    }
+
+    public Person(int id, String name, String phone) {
+        this.id = id;
         this.name = name;
         this.phone = phone;
     }
