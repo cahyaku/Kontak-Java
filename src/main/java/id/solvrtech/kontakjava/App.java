@@ -11,12 +11,12 @@ import java.util.Locale;
 import static id.solvrtech.kontakjava.helper.Helper.*;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         App app = new App();
         app.run();
     }
 
-    public void run() {
+    public void run() throws SQLException {
         PersonService personService = new PersonService();
         int choice;
         do {

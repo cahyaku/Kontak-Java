@@ -4,7 +4,6 @@ import id.solvrtech.kontakjava.entity.Person;
 
 import java.sql.*;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,24 +18,42 @@ public class MySqlPersonRepository implements PersonRepository {
     Statement stmt;
     ResultSet rs;
 
-//    // Harus dibungkus dalam block try/catch
-//     try {
-//        // buat koneksi ke database
-//        conn = DriverManager.getConnection(DB_URL, USER, PASS);
-//        // buat objek statement untuk melakukan query
-//        stmt = conn.createStatement();
-//        // query ke database dan tampilkan
-//        rs = stmt.executeQuery("SELECT * FROM persons");
-//        while (rs.next()) {
-//            System.out.println("ID: " + rs.getInt("id"));
-//            System.out.println("Name: " + rs.getString("name"));
-//            System.out.println("Phone: " + rs.getString("phone"));
+    // Beberapa hal yang belum:
+    // 1. Ubah Connection agar tidak dilakukan secara berulang kali.
+    // 2. semua wajib menggunakan close statement, sebaiknya menngunakan try catch yang diakhiri dengan finally.
+    //    Kemudian letakan close stamentnya disana, untuk sekarng masih error, karena perlu throw Exception.
+    // 3. update is phone exists dengan menggunakan query.
+    // 4. tinggal deletenya saja.
+
+    //    public MySqlPersonRepository() {
+//        try {
+//            Class.forName("com.mysql.cjbc.Driver");
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
 //        }
-//        // jangan lupa untuk menutup statement dan koneksi spy tidak ada kebocoran memory
-//        stmt.close();
-//        conn.close();
-//    } catch (Exception e) {
-//        e.printStackTrace();
+//    }
+//
+//    private <T> T executeQuery(String query, QueryExecutor<T> executor) {
+//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+//             Statement stmt = conn.createStatement();
+//             ResultSet rs = stmt.executeQuery(query)
+//        ) {
+//            return executor.execute(stament);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+    // Helper method to run a query and process results
+//    private <T> T executeQuery(String query, QueryProcessor<T> processor) {
+//        try (Connection connection = DriverManager.getConnection(url, user, password);
+//             PreparedStatement statement = connection.prepareStatement(query)) {
+//            return processor.process(statement);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
 //    }
 
     @Override
@@ -47,20 +64,16 @@ public class MySqlPersonRepository implements PersonRepository {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
             while (rs.next()) {
-                // Dengan ini bisa saja langsung menampilkan datanya, jadi langsung panggila aja di app
-//                System.out.println("ID: " + rs.getInt("id"));
-//                System.out.println("Name: " + rs.getString("name"));
-//                System.out.println("Phone: " + rs.getString("phone"));
+                int id = rs.getInt("id");
+                Person person = new Person(rs.getNString("name"), rs.getString("phone"));
+                person.setId(id);
+                persons.add(person);
 
-                // Kalau ini ditampung didalam List dulu, agar bisa masuk ke method shoqw yang parameternya adalah List.
-                persons.add(new Person(rs.getInt("id"), rs.getNString("name"), rs.getString("phone")));
             }
             stmt.close();
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-//        } finally {
-//
         }
         return persons;
     }
@@ -76,7 +89,7 @@ public class MySqlPersonRepository implements PersonRepository {
             if (rs.next()) {
                 String name = rs.getString("name");
                 String phone = rs.getString("phone");
-                return new Person(id, name, phone);
+                return new Person(name, phone);
             }
             stmt.close();
             conn.close();
@@ -98,11 +111,12 @@ public class MySqlPersonRepository implements PersonRepository {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String phone = rs.getString("phone");
-                persons.add(new Person(id, name, phone));
+                persons.add(new Person(name, phone));
             }
+            stmt.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
-//            throw new RuntimeException(e);
         }
         return persons;
     }
@@ -114,21 +128,66 @@ public class MySqlPersonRepository implements PersonRepository {
 
     @Override
     public Person create(Person person) {
-        return null;
+        String query = "INSERT INTO persons (name, phone) VALUES (?, ?)";
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, person.getName());
+            stmt.setString(2, person.getPhone());
+            stmt.executeUpdate();
+            // Kita bisa langsung create seperti ini saja, ini tanpa perlu mengakses array Listnya dulu,
+            // kemudian menambahkan dengan menggunakan method add.
+            person = new Person(person.getName(), person.getPhone());
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return person;
     }
 
     @Override
     public Person update(int id, Person person) {
-        return null;
+        String query = "UPDATE persons SET name = ?, phone = ? WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, person.getName());
+            stmt.setString(2, person.getPhone());
+            stmt.setInt(3, person.getId());
+            stmt.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return person;
     }
 
     @Override
     public void deleteById(int id) {
-
+        String query = "DELETE FROM persons WHERE id = " + id;
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean isPhoneNumberExists(Integer id, String phoneNumber) {
+        String query;
+        if (id == null) {
+            query = "SELECT * FROM persons WHERE phone ==" + phoneNumber;
+        } else {
+            query = "SELECT * FROM persons WHERE id != " + id + " AND phone = " + phoneNumber;
+        }
+//        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);){\
+//            .....
+//            }catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
         return false;
     }
 }

@@ -2,10 +2,11 @@ package id.solvrtech.kontakjava.repository;
 
 import id.solvrtech.kontakjava.entity.Person;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface PersonRepository {
-    List<Person> getAll();
+    List<Person> getAll() throws SQLException;
 
     Person getById(int id);
 
