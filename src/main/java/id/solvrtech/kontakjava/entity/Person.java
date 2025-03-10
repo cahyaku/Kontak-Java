@@ -8,12 +8,6 @@ public class Person {
     private String name;
     private String phone;
 
-    // Sama seperti saat membuat small bank bagian account.
-//    public Person(String name, String phone) {
-//        this.name = name;
-//        this.phone = phone;
-//    }
-
     public Person(String name, String phone) {
         this.name = name;
         this.phone = phone;
@@ -26,7 +20,7 @@ public class Person {
     }
 
     // Method getter dan setter, ini fungsinya untuk dapat mengubah dan mengakses nilai variabel dari si objek.
-    // Karena instance variable kali ini di-set menjadi private untuk menjaga keamaanan (dikenal dgn encapsulation).
+    // Karena instance variable kali ini di-set menjadi private untuk menjaga keamanan (dikenal dgn encapsulation).
     public int getId() {
         return id;
     }

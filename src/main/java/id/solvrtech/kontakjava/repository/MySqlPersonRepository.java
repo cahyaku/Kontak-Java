@@ -3,47 +3,47 @@ package id.solvrtech.kontakjava.repository;
 import id.solvrtech.kontakjava.entity.Person;
 
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlPersonRepository implements PersonRepository {
-    // Menyiapakan parameter JDBC untuk koneksi ke database
-    String DB_URL = "jdbc:mysql://localhost:33061/kontakjavadb";
-    String USER = "root";
-    String PASSWORD = "password";
+    // Ini untuk koneksi ke databasenya.
+    DatabaseConnection databaseConnection = new DatabaseConnection();
 
-    // Menyiapkan onjek yang diperlukan untuk mengelola database
-    Connection conn;
-    Statement stmt;
-    ResultSet rs;
+    /**
+     * Note:
+     * 1. Semua hasil dari ResultSet tidak bisa langusng di return begitu saja, maka kita wajib mengubah bentuknya
+     * terlebih dahulu. Baik itu ke dalam array list, atupun ke dalam bentk objek (misal person).
+     * ---------
+     * 2. Semua wajib dalam dibungkus dalam blok try/catch, untuk menangani kesalahan tak terduga saat kode dijalankan.
+     * ---------
+     * 3. constants connection tidak cocok di letakkan di setiap file repository, karena umumnya setiap project akan
+     * memiliki banyak file repository. Tujuannya adalah menghindari copas constants secara berulang dimana-mana.
+     * ---------
+     * 4. Fungsi dari resultSet.next() adalah adalah untuk memindahka kursor ke baris berikutnya dalam set hasil.
+     * rs.next() mengembalikan true jika ada hasil, contoh penggunaannya if(rs.next()) berarti:
+     * jika baris berikutnya bukan null (ada), lanjutkan.
+     **/
 
-    // Beberapa hal yang belum:
-    // 1. Ubah Connection agar tidak dilakukan secara berulang kali.
-    // 2. semua wajib menggunakan close statement, sebaiknya menngunakan try catch yang diakhiri dengan finally.
-    //    Kemudian letakan close stamentnya disana, untuk sekarng masih error, karena perlu throw Exception.
-    // 3. update is phone exists dengan menggunakan query.
-    // 4. tinggal deletenya saja.
-    // 5. Jadi semua hasil dari ResultSet tidak bisa langsung di return begitu saja, maka kita wajib mengubah bentuknya
-    //    terlebih dahulu baik itu ke dalam array list, ataupun ke dalam bentuk objek, misalnya person.
     
     @Override
     public List<Person> getAll() {
         List<Person> persons = new ArrayList<>();
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 Person person = new Person(rs.getNString("name"), rs.getString("phone"));
                 person.setId(id);
                 persons.add(person);
             }
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
         return persons;
     }
@@ -51,8 +51,9 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public Person getById(int id) {
         String query = "SELECT * FROM persons WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -61,10 +62,11 @@ public class MySqlPersonRepository implements PersonRepository {
                 String phone = rs.getString("phone");
                 return new Person(id, name, phone);
             }
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
         return null;
     }
@@ -73,10 +75,11 @@ public class MySqlPersonRepository implements PersonRepository {
     public List<Person> getByName(String name) {
         List<Person> persons = new ArrayList<>();
         String query = "SELECT * FROM persons WHERE name LIKE ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-//            stmt.setString(1, name);
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            // stmt.setString(1, name);
             // Perlu diingat tanda % merupakan wildcard (karakter khusus) dalam  operator LIKE
             // untuk mewakili nol, satu, atau beberapa karakter.
             stmt.setString(1, "%" + name + "%");
@@ -89,10 +92,11 @@ public class MySqlPersonRepository implements PersonRepository {
                 persons.add(new Person(id, personName, phone));
             }
 
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
         return persons;
     }
@@ -102,9 +106,11 @@ public class MySqlPersonRepository implements PersonRepository {
         List<Person> persons = new ArrayList<>();
         String query = "SELECT * FROM persons WHERE phone LIKE ?";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-//            stmt.setString(1, phone);
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // stmt.setString(1, phone);
             stmt.setString(1, "%" + phone + "%");
             ResultSet rs = stmt.executeQuery();
 
@@ -114,11 +120,13 @@ public class MySqlPersonRepository implements PersonRepository {
                 String phoneNumber = rs.getString("phone");
                 persons.add(new Person(id, name, phoneNumber));
             }
-            stmt.close();
-            conn.close();
             return persons;
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
         return persons;
     }
@@ -126,18 +134,20 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public Person create(Person person) {
         String query = "INSERT INTO persons (name, phone) VALUES (?, ?)";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, person.getName());
             stmt.setString(2, person.getPhone());
             stmt.executeUpdate();
             // Kita bisa langsung create seperti ini saja, ini tanpa perlu mengakses array Listnya dulu,
             // kemudian menambahkan dengan menggunakan method add.
             person = new Person(person.getName(), person.getPhone());
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
         return person;
     }
@@ -145,17 +155,19 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public Person update(int id, Person person) {
         String query = "UPDATE persons SET name = ?, phone = ? WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, person.getName());
             stmt.setString(2, person.getPhone());
             stmt.setInt(3, person.getId());
             stmt.executeUpdate();
 
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
         return person;
     }
@@ -163,12 +175,16 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public void deleteById(int id) {
         String query = "DELETE FROM persons WHERE id = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
     }
 
@@ -181,14 +197,17 @@ public class MySqlPersonRepository implements PersonRepository {
             query = "SELECT * FROM persons WHERE phone = ?";
         }
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, phoneNumber);
 
             if (id != null) {
-                stmt.setInt(2, id);
+                stmt.setInt(2, id); // Jika ada idnya, baru set statement id-nya.
             }
+
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count > 0; // Mengembalikan nilai true jika ada satu nomor tlpn yang benar.
@@ -197,6 +216,9 @@ public class MySqlPersonRepository implements PersonRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
         }
         return false;
     }

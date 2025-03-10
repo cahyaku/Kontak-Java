@@ -5,125 +5,59 @@ import id.solvrtech.kontakjava.repository.InMemoryPersonRepository;
 import id.solvrtech.kontakjava.repository.MySqlPersonRepository;
 import id.solvrtech.kontakjava.repository.PersonRepository;
 
-import java.sql.SQLException;
 import java.util.*;
 
 public class PersonService {
 
-    /**
-     * Menggunakan InMemoryRepository
-     */
-//    private PersonRepository personRepository;
-//
-//    public PersonService() {
-//        this.personRepository = new InMemoryPersonRepository();
-//    }
-//
-//    public List<Person> getAll() {
-//        return personRepository.getAll();
-//    }
-//
-//    public Person getById(int id) {
-//        return personRepository.getById(id);
-//    }
-//
-//    public boolean create(String name, String phone) {
-//        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, phone);
-//        if (checkPhoneNumber) {
-//            return true;
-//        }
-//
-//        Person person = new Person(name, phone);
-//        personRepository.create(person);
-//        return false;
-//    }
-//
-//    public boolean update(Person updatePerson, String name, String phone) {
-//        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(updatePerson.getId(), phone);
-//        if (checkPhoneNumber) {
-//            return true;
-//        }
-//        updatePerson.setName(name.trim().isEmpty() ? updatePerson.getName() : name);
-//        updatePerson.setPhone(phone.trim().isEmpty() ? updatePerson.getPhone() : phone);
-//
-//        personRepository.update(updatePerson.getId(), updatePerson);
-//        return false;
-//    }
-//
-//    public void delete(Person person) {
-//        personRepository.deleteById(person.getId());
-//    }
-//
-//    public ArrayList<Person> search(String searchInput) {
-//        List<Person> personByName = personRepository.getByName(searchInput);
-//        List<Person> personByPhone = personRepository.getByPhone(searchInput);
-//        if (!personByName.isEmpty()) {
-//            return (ArrayList<Person>) personByName;
-//        } else if (!personByPhone.isEmpty()) {
-//            return (ArrayList<Person>) personByPhone;
-//        }
-//        return null;
-//    }
-//
-//    public boolean isEmpty() {
-//        List<Person> persons = this.getAll();
-//        if (persons.isEmpty()) {
-//            return true;
-//        }
-//        return false;
-//    }
-
-    /**
-     * MySql Repositoty
-     */
-//    private PersonRepository personRepository;
-
-    private MySqlPersonRepository mySqlPersonRepository;
+    private final PersonRepository personRepository;
 
     public PersonService() {
+        // 1. Using person repository (InMemory)
 //        this.personRepository = new InMemoryPersonRepository();
-        this.mySqlPersonRepository = new MySqlPersonRepository();
+
+        // 2. Using MySql
+        this.personRepository = new MySqlPersonRepository();
     }
 
     public List<Person> getAll() {
-        return mySqlPersonRepository.getAll();
+        return personRepository.getAll();
     }
 
     public Person getById(int id) {
-        return mySqlPersonRepository.getById(id);
+        return personRepository.getById(id);
     }
 
     public boolean create(String name, String phone) {
-        boolean checkPhoneNumber = mySqlPersonRepository.isPhoneNumberExists(null, phone);
+        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, phone);
         if (checkPhoneNumber) {
             return true;
         }
 
         Person person = new Person(name, phone);
-        mySqlPersonRepository.create(person);
+        personRepository.create(person);
         return false;
     }
 
     public boolean update(Person updatePerson, String name, String phone) {
-        boolean checkPhoneNumber = mySqlPersonRepository.isPhoneNumberExists(updatePerson.getId(), phone);
+        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(updatePerson.getId(), phone);
         if (checkPhoneNumber) {
             return true;
         }
         updatePerson.setName(name.trim().isEmpty() ? updatePerson.getName() : name);
         updatePerson.setPhone(phone.trim().isEmpty() ? updatePerson.getPhone() : phone);
 
-        mySqlPersonRepository.update(updatePerson.getId(), updatePerson);
+        personRepository.update(updatePerson.getId(), updatePerson);
         return false;
     }
 
     public void delete(Person person) {
-        mySqlPersonRepository.deleteById(person.getId());
+        personRepository.deleteById(person.getId());
     }
 
     public ArrayList<Person> search(String searchInput) {
 
-        List<Person> personByName = mySqlPersonRepository.getByName(searchInput);
-        List<Person> personByPhone = mySqlPersonRepository.getByPhone(searchInput);
+        List<Person> personByName = personRepository.getByName(searchInput);
+        List<Person> personByPhone = personRepository.getByPhone(searchInput);
 
         if (!personByName.isEmpty()) {
             return (ArrayList<Person>) personByName;
