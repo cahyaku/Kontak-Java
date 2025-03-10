@@ -19,6 +19,12 @@ public class Person {
         this.phone = phone;
     }
 
+    public Person(int id, String name, String phone) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+    }
+
     // Method getter dan setter, ini fungsinya untuk dapat mengubah dan mengakses nilai variabel dari si objek.
     // Karena instance variable kali ini di-set menjadi private untuk menjaga keamaanan (dikenal dgn encapsulation).
     public int getId() {

@@ -11,12 +11,12 @@ import java.util.Locale;
 import static id.solvrtech.kontakjava.helper.Helper.*;
 
 public class App {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         App app = new App();
         app.run();
     }
 
-    public void run() throws SQLException {
+    public void run() {
         PersonService personService = new PersonService();
         int choice;
         do {
@@ -39,7 +39,6 @@ public class App {
                         System.out.println("People don't exist yet");
                     } else {
                         System.out.println("======== All persons data ========");
-//                        personService.getAll();
                         showPersons(personService.getAll());
                     }
                     pressAnyKeyToContinue();
