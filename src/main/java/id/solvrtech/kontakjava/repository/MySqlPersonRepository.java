@@ -13,7 +13,7 @@ public class MySqlPersonRepository implements PersonRepository {
     /**
      * Note:
      * 1. Semua hasil dari ResultSet tidak bisa langusng di return begitu saja, maka kita wajib mengubah bentuknya
-     * terlebih dahulu. Baik itu ke dalam array list, atupun ke dalam bentk objek (misal person).
+     * terlebih dahulu. Baik itu ke dalam array list, atupun ke dalam bentuk objek (misal person).
      * ---------
      * 2. Semua wajib dalam dibungkus dalam blok try/catch, untuk menangani kesalahan tak terduga saat kode dijalankan.
      * ---------
@@ -23,9 +23,12 @@ public class MySqlPersonRepository implements PersonRepository {
      * 4. Fungsi dari resultSet.next() adalah adalah untuk memindahka kursor ke baris berikutnya dalam set hasil.
      * rs.next() mengembalikan true jika ada hasil, contoh penggunaannya if(rs.next()) berarti:
      * jika baris berikutnya bukan null (ada), lanjutkan.
+     * ---------
+     * 5. method statement.executedQuery(); dugunakan untuk mengeksekusi sql yang mengembalikan reslutSet,
+     * yaitu data yang diambil dari database.
      **/
 
-    
+
     @Override
     public List<Person> getAll() {
         List<Person> persons = new ArrayList<>();
