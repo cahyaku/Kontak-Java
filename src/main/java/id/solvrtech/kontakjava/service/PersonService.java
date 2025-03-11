@@ -1,11 +1,11 @@
 package id.solvrtech.kontakjava.service;
 
 import id.solvrtech.kontakjava.entity.Person;
-import id.solvrtech.kontakjava.repository.InMemoryPersonRepository;
 import id.solvrtech.kontakjava.repository.MySqlPersonRepository;
 import id.solvrtech.kontakjava.repository.PersonRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PersonService {
 
@@ -26,14 +26,13 @@ public class PersonService {
     public Person getById(int id) {
         return personRepository.getById(id);
     }
-
-    public boolean create(String name, String phone) {
-        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, phone);
+    
+    public boolean create(Person person) {
+        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, person.getPhone());
         if (checkPhoneNumber) {
             return true;
         }
 
-        Person person = new Person(name, phone);
         personRepository.create(person);
         return false;
     }

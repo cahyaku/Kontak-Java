@@ -59,7 +59,7 @@ public class App {
                     System.out.println("======== Create new person ========");
                     String name = readLineAsString("Enter name: ", "required");
                     String phone = askForPhoneNumber("required");
-                    boolean newPersonCreate = personService.create(name, phone);
+                    boolean newPersonCreate = personService.create(new Person(0, name, phone));
                     if (newPersonCreate) {
                         System.out.println("New person could not be created, because phone number is already in use.");
                     } else {

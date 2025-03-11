@@ -1,17 +1,10 @@
 package id.solvrtech.kontakjava.entity;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class Person {
     // set private
     private int id;
     private String name;
     private String phone;
-
-    public Person(String name, String phone) {
-        this.name = name;
-        this.phone = phone;
-    }
 
     public Person(int id, String name, String phone) {
         this.id = id;

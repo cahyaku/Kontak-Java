@@ -38,7 +38,7 @@ public class MySqlPersonRepository implements PersonRepository {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
             while (rs.next()) {
                 int id = rs.getInt("id");
-                Person person = new Person(rs.getNString("name"), rs.getString("phone"));
+                Person person = new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone"));
                 person.setId(id);
                 persons.add(person);
             }
@@ -143,9 +143,15 @@ public class MySqlPersonRepository implements PersonRepository {
             stmt.setString(1, person.getName());
             stmt.setString(2, person.getPhone());
             stmt.executeUpdate();
+
             // Kita bisa langsung create seperti ini saja, ini tanpa perlu mengakses array Listnya dulu,
             // kemudian menambahkan dengan menggunakan method add.
-            person = new Person(person.getName(), person.getPhone());
+
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                person = new Person(generatedKeys.getInt(1), person.getName(), person.getPhone());
+            }
+//            person = new Person(person.getId(), person.getName(), person.getPhone());
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
