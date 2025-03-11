@@ -179,9 +179,9 @@ public class MySqlPersonRepository implements PersonRepository {
     public boolean doesPhoneNumberExists(Integer id, String phoneNumber) {
         String query;
         if (id != null) {
-            query = "SELECT * FROM persons WHERE phone = ? AND id != ?";
+            query = "SELECT COUNT(*) AS count FROM persons WHERE phone = ? AND id != ?";
         } else {
-            query = "SELECT * FROM persons WHERE phone = ?";
+            query = "SELECT COUNT(*) AS count FROM persons WHERE phone = ?";
         }
 
         try (Connection conn = databaseConnection.createDBConnection();
@@ -195,7 +195,7 @@ public class MySqlPersonRepository implements PersonRepository {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                int count = rs.getInt(1);
+                int count = rs.getInt("count");
                 return count > 0; // Mengembalikan nilai true jika ada satu nomor tlpn yang benar.
             } else {
                 return false;
