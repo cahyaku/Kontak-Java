@@ -143,7 +143,22 @@ public class App {
             for (Person person : persons) {
                 // Untuk mendapatkan namenya maka diperlukan mengakases method getternya.
                 System.out.println(number + ".  Name: " + person.getName().toLowerCase(Locale.ROOT));
-                System.out.println("    Phone number: " + person.getPhone());
+
+                /**
+                 * Ini untuk menghilangkan +62 saat di tampilkan.
+                 * startsWith("+62") : Untuk mengecek apakah string yang di dapat dari getPhone() diawali dengan substring +62.
+                 * person.getPhone().replaceFirst("\\+62", "0") : ini untuk mengganti substring +62 dengan 0.
+                 */
+
+                String phoneNumber = (person.getPhone().startsWith("+62")) ?
+                        person.getPhone().replaceFirst("\\+62", "0") :
+                        person.getPhone();
+
+
+                // Removes the first two characters ("+62"), ini tidak bisa karena di DB ada yang disimpan tanpa +62.
+                // String phoneNumberWithoutCode = phoneNumberWithCode.substring(2);
+
+                System.out.println("    Phone number: " + phoneNumber);
                 System.out.println("    Id: " + person.getId());
                 number++;
             }
