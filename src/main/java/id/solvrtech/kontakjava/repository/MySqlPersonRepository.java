@@ -32,10 +32,9 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public List<Person> getAll() {
         List<Person> persons = new ArrayList<>();
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
@@ -52,9 +51,8 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public Person getById(int id) {
         String query = "SELECT * FROM persons WHERE id = ?";
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -74,9 +72,8 @@ public class MySqlPersonRepository implements PersonRepository {
     public List<Person> getByName(String name) {
         List<Person> persons = new ArrayList<>();
         String query = "SELECT * FROM persons WHERE name LIKE ?";
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
             // Perlu diingat tanda % merupakan wildcard (karakter khusus) dalam  operator LIKE
             // untuk mewakili nol, satu, atau beberapa karakter.
@@ -101,9 +98,8 @@ public class MySqlPersonRepository implements PersonRepository {
         List<Person> persons = new ArrayList<>();
         String query = "SELECT * FROM persons WHERE phone LIKE ?";
 
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, "%" + phone + "%");
             ResultSet rs = stmt.executeQuery();
@@ -125,9 +121,8 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public Person create(Person person) {
         String query = "INSERT INTO persons (name, phone) VALUES (?, ?)";
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, person.getName());
             stmt.setString(2, person.getPhone());
             stmt.executeUpdate();
@@ -149,9 +144,8 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public Person update(int id, Person person) {
         String query = "UPDATE persons SET name = ?, phone = ? WHERE id = ?";
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, person.getName());
             stmt.setString(2, person.getPhone());
             stmt.setInt(3, person.getId());
@@ -169,9 +163,8 @@ public class MySqlPersonRepository implements PersonRepository {
     @Override
     public void deleteById(int id) {
         String query = "DELETE FROM persons WHERE id = ?";
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -191,9 +184,8 @@ public class MySqlPersonRepository implements PersonRepository {
             query = "SELECT * FROM persons WHERE phone = ?";
         }
 
-        try (
-                Connection conn = databaseConnection.createDBConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = databaseConnection.createDBConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, phoneNumber);
 
             if (id != null) {
