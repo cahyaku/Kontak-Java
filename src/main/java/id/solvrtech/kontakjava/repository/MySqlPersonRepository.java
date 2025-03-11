@@ -176,7 +176,7 @@ public class MySqlPersonRepository implements PersonRepository {
     }
 
     @Override
-    public boolean isPhoneNumberExists(Integer id, String phoneNumber) {
+    public boolean doesPhoneNumberExists(Integer id, String phoneNumber) {
         String query;
         if (id != null) {
             query = "SELECT * FROM persons WHERE phone = ? AND id != ?";

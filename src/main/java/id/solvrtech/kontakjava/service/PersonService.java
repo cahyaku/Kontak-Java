@@ -28,7 +28,7 @@ public class PersonService {
     }
 
     public boolean create(Person person) {
-        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, person.getPhone());
+        boolean checkPhoneNumber = personRepository.doesPhoneNumberExists(null, person.getPhone());
         if (checkPhoneNumber) {
             return true;
         }
@@ -38,7 +38,7 @@ public class PersonService {
     }
 
     public boolean update(Person updatePerson, String name, String phone) {
-        boolean checkPhoneNumber = personRepository.isPhoneNumberExists(updatePerson.getId(), phone);
+        boolean checkPhoneNumber = personRepository.doesPhoneNumberExists(updatePerson.getId(), phone);
         if (checkPhoneNumber) {
             return true;
         }

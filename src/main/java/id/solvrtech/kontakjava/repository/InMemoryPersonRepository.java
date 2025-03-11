@@ -73,7 +73,7 @@ public class InMemoryPersonRepository implements PersonRepository {
     }
 
     @Override
-    public boolean isPhoneNumberExists(Integer id, String phoneNumber) {
+    public boolean doesPhoneNumberExists(Integer id, String phoneNumber) {
         for (Person person : persons) {
             boolean samePhoneNumber = Objects.equals(person.getPhone(), phoneNumber);
             boolean sameId = Objects.equals(person.getId(), id);

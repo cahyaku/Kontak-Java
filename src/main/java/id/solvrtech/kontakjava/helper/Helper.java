@@ -1,6 +1,6 @@
 package id.solvrtech.kontakjava.helper;
 
-import java.util.*;
+import java.util.Scanner;
 
 public class Helper {
     public static Integer readLineAsInt(String message, String errorMessage) {
