@@ -1,6 +1,7 @@
 package id.solvrtech.kontakjava.helper;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Helper {
     public static Integer readLineAsInt(String message, String errorMessage) {
@@ -50,13 +51,24 @@ public class Helper {
     }
 
 
-    public static boolean isNumeric(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+//    public static boolean isNumeric(String str) {
+//        try {
+//            Integer.parseInt(str);
+//            return true;
+//        } catch (NumberFormatException e) {
+//            return false;
+//        }
+//    }
+
+    /**
+     * Tanda ^ : untuk menandai string di awal
+     * 0[0-9]{1,15} : Dimulai dari nol diikuti oleh 1 sampai 15 angka, sehinnga total panjang hingga 16.
+     * \\+62[0-9]{1,14} : Dimulai dengan tanda +62 yang diikuti 1 samapai 14 angka, sehingga total panjang 16.
+     **/
+    private static final String PHONE_REGEX = "^(0[0-9]{1,15}|\\+62[0-9]{1,14})$";
+
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        return Pattern.matches(PHONE_REGEX, phoneNumber.trim());
     }
 
     public static boolean confirmYesNo() {

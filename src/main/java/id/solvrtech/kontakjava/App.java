@@ -61,7 +61,8 @@ public class App {
                     String phone = askForPhoneNumber("required");
                     boolean newPersonCreate = personService.create(new Person(0, name, phone));
                     if (newPersonCreate) {
-                        System.out.println("New person could not be created, because phone number is already in use.");
+                        System.out.println("New person could not be created, " +
+                                "because phone number is already in use.");
                     } else {
                         System.out.println("New person has been created.");
                     }
@@ -83,7 +84,8 @@ public class App {
                             String updatePhone = askForPhoneNumber(null);
                             boolean updatePerson = personService.update(personToUpdate, updateName, updatePhone);
                             if (updatePerson) {
-                                System.out.println("Person data could not be updated, because phone number is already in use.");
+                                System.out.println("Person data could not be updated," +
+                                        " because phone number is already in use.");
                             } else {
                                 System.out.println("Person has been updated.");
                             }
@@ -161,10 +163,11 @@ public class App {
             }
 
             // Periksa apakah phone numbernya numerik
-            if (isNumeric(phone)) {
+            if (isValidPhoneNumber(phone)) {
                 return phone; // Jika benar numerik kembalikan phone numbernya.
             } else {
-                System.out.println("Please enter a valid phone number");
+                System.out.println("Please enter a valid phone number."
+                        + " Phone numbers start with 0 or +62 with a total length of lees than 16 characters.");
             }
         }
     }
