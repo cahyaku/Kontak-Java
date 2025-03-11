@@ -38,9 +38,7 @@ public class MySqlPersonRepository implements PersonRepository {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
             while (rs.next()) {
                 int id = rs.getInt("id");
-                Person person = new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone"));
-                person.setId(id);
-                persons.add(person);
+                persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,9 +59,7 @@ public class MySqlPersonRepository implements PersonRepository {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String name = rs.getString("name");
-                String phone = rs.getString("phone");
-                return new Person(id, name, phone);
+                return new Person(id, rs.getString("name"), rs.getString("phone"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,17 +78,13 @@ public class MySqlPersonRepository implements PersonRepository {
                 Connection conn = databaseConnection.createDBConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            // stmt.setString(1, name);
             // Perlu diingat tanda % merupakan wildcard (karakter khusus) dalam  operator LIKE
             // untuk mewakili nol, satu, atau beberapa karakter.
             stmt.setString(1, "%" + name + "%");
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String personName = rs.getString("name");
-                String phone = rs.getString("phone");
-                persons.add(new Person(id, personName, phone));
+                persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
             }
 
         } catch (SQLException e) {
@@ -113,15 +105,11 @@ public class MySqlPersonRepository implements PersonRepository {
                 Connection conn = databaseConnection.createDBConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            // stmt.setString(1, phone);
             stmt.setString(1, "%" + phone + "%");
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                String phoneNumber = rs.getString("phone");
-                persons.add(new Person(id, name, phoneNumber));
+                persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
             }
             return persons;
 
@@ -144,14 +132,11 @@ public class MySqlPersonRepository implements PersonRepository {
             stmt.setString(2, person.getPhone());
             stmt.executeUpdate();
 
-            // Kita bisa langsung create seperti ini saja, ini tanpa perlu mengakses array Listnya dulu,
-            // kemudian menambahkan dengan menggunakan method add.
-
             ResultSet generatedKeys = stmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 person = new Person(generatedKeys.getInt(1), person.getName(), person.getPhone());
             }
-//            person = new Person(person.getId(), person.getName(), person.getPhone());
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

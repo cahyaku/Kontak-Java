@@ -26,7 +26,7 @@ public class PersonService {
     public Person getById(int id) {
         return personRepository.getById(id);
     }
-    
+
     public boolean create(Person person) {
         boolean checkPhoneNumber = personRepository.isPhoneNumberExists(null, person.getPhone());
         if (checkPhoneNumber) {
@@ -42,6 +42,7 @@ public class PersonService {
         if (checkPhoneNumber) {
             return true;
         }
+
         updatePerson.setName(name.trim().isEmpty() ? updatePerson.getName() : name);
         updatePerson.setPhone(phone.trim().isEmpty() ? updatePerson.getPhone() : phone);
 
