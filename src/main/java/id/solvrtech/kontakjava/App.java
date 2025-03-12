@@ -149,7 +149,6 @@ public class App {
                  * startsWith("+62") : Untuk mengecek apakah string yang di dapat dari getPhone() diawali dengan substring +62.
                  * person.getPhone().replaceFirst("\\+62", "0") : ini untuk mengganti substring +62 dengan 0.
                  */
-
                 String phoneNumber = (person.getPhone().startsWith("+62")) ?
                         person.getPhone().replaceFirst("\\+62", "0") :
                         person.getPhone();

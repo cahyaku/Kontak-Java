@@ -1,6 +1,7 @@
 package id.solvrtech.kontakjava.service;
 
 import id.solvrtech.kontakjava.entity.Person;
+import id.solvrtech.kontakjava.repository.DatabaseConnection;
 import id.solvrtech.kontakjava.repository.MySqlPersonRepository;
 import id.solvrtech.kontakjava.repository.PersonRepository;
 
@@ -11,12 +12,16 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
+//    DatabaseConnection databaseConnection;
+
     public PersonService() {
         // 1. Using person repository (InMemory)
 //        this.personRepository = new InMemoryPersonRepository();
 
         // 2. Using MySql
-        this.personRepository = new MySqlPersonRepository();
+
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        this.personRepository = new MySqlPersonRepository(databaseConnection);
     }
 
     public List<Person> getAll() {
