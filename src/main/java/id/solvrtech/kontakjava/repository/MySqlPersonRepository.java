@@ -60,22 +60,31 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
 
     @Override
     public Person getById(int id) {
-        String query = "SELECT * FROM persons WHERE id = ?";
-        try (Connection conn = databaseConnection.createDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+        return this.executeQueryForSingleData("SELECT * FROM persons WHERE id = ?",
+                new PreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement stmt) throws SQLException {
+                        stmt.setInt(1, id);
+                    }
+                });
 
-            if (rs.next()) {
-                return new Person(id, rs.getString("name"), rs.getString("phone"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnection.closeConnection();
-            databaseConnection.closeStatement();
-        }
-        return null;
+//        String query = "SELECT * FROM persons WHERE id = ?";
+//        try (Connection conn = databaseConnection.createDBConnection();
+//             PreparedStatement stmt = conn.prepareStatement(query)) {
+//            stmt.setInt(1, id);
+//            ResultSet rs = stmt.executeQuery();
+//
+//            if (rs.next()) {
+//                return new Person(id, rs.getString("name"), rs.getString("phone"));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            databaseConnection.closeConnection();
+//            databaseConnection.closeStatement();
+//        }
+//        return null;
+
     }
 
     @Override
@@ -196,17 +205,20 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
 
     @Override
     public void deleteById(int id) {
-        String query = "DELETE FROM persons WHERE id = ?";
-        try (Connection conn = databaseConnection.createDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnection.closeConnection();
-            databaseConnection.closeStatement();
-        }
+        executeDelete("DELETE FROM persons WHERE id = ?",
+                stmt -> stmt.setInt(1, id));
+
+//        String query = "DELETE FROM persons WHERE id = ?";
+//        try (Connection conn = databaseConnection.createDBConnection();
+//             PreparedStatement stmt = conn.prepareStatement(query)) {
+//            stmt.setInt(1, id);
+//            stmt.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            databaseConnection.closeConnection();
+//            databaseConnection.closeStatement();
+//        }
     }
 
     @Override

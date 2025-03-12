@@ -41,6 +41,7 @@ public abstract class BaseRepository<T> {
      *
      * @param query  String
      * @param setter {@link PreparedStatementSetter}
+     * @return
      */
     protected void executeQuery(String query, PreparedStatementSetter setter, ResultSetAction action) {
         try (Connection conn = databaseConnection.createDBConnection();
@@ -59,6 +60,7 @@ public abstract class BaseRepository<T> {
         } catch (SQLException e) {
             e.printStackTrace(); // ini untuk menangkan exception ketika terjadi error saat createDBConnetion.
         }
+//        return null;
     }
 
     /**
@@ -70,12 +72,30 @@ public abstract class BaseRepository<T> {
      * @return T
      */
     protected T executeQueryForSingleData(String query, PreparedStatementSetter setter) {
+        // Sepertinya ada masalah di bagian ini, gimana caranya biar
         List<T> temp = new ArrayList<>(); // ini untuk menampung hasil resultnya.
+        try (
+                Connection conn = databaseConnection.createDBConnection();
+                PreparedStatement stmt = conn.prepareStatement(query);
+        ) {
 
-        executeQuery(query, setter, result -> { // tahap ini belum paham, baru pakai auto complete saja.
-            temp.add(mapToEntity(result));
-        });
+            T[] data = (T[]) new Object[1];
+            executeQuery(query, setter, result -> { // tahap ini belum paham, baru pakai auto complete saja.
+//                while (result.next()) {
+//                temp.add(mapToEntity(result));
 
+                if (result.next()) {
+                    data[0] = mapToEntity(result);
+                }
+            });
+            return data[0];
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            databaseConnection.closeConnection();
+            databaseConnection.closeStatement();
+        }
         return null;
     }
 
