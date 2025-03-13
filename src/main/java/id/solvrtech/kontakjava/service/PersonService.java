@@ -1,7 +1,7 @@
 package id.solvrtech.kontakjava.service;
 
 import id.solvrtech.kontakjava.entity.Person;
-import id.solvrtech.kontakjava.repository.InMemoryPersonRepository;
+import id.solvrtech.kontakjava.repository.MySqlPersonRepository;
 import id.solvrtech.kontakjava.repository.PersonRepository;
 
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ public class PersonService {
 
     public PersonService() {
         // 1. Using person repository (InMemory)
-        this.personRepository = new InMemoryPersonRepository();
+//        this.personRepository = new InMemoryPersonRepository();
 
         // 2. Using MySql
-//        this.personRepository = new MySqlPersonRepository();
+        this.personRepository = new MySqlPersonRepository();
     }
 
     public List<Person> getAll() {
