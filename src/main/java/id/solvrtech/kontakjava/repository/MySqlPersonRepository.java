@@ -12,11 +12,10 @@ import java.util.List;
  * Saat extends dari BaseRepository bagian<T> wajib di isi dengan entity atau model class repository, sehingga modelnya adalah person.
  */
 public class MySqlPersonRepository extends BaseRepository<Person> implements PersonRepository {
-    // Ini untuk koneksi ke databasenya.
-//    DatabaseConnection databaseConnection = new DatabaseConnection();
 
-    public MySqlPersonRepository(DatabaseConnection databaseConnection) {
-        super(databaseConnection); // ini untuk mendapatkan databaseConnection dari super classnya yakni BasePersonRepository.
+    public MySqlPersonRepository() {
+        // Ini untuk mendapatkan databaseConnection dari super classnya yakni BasePersonRepository.
+        super(new DatabaseConnection());
     }
 
     /**
@@ -40,22 +39,6 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
     @Override
     public List<Person> getAll() {
         return this.executeQueryForMultipleData("Select * FROM persons", null);
-
-//        List<Person> persons = new ArrayList<>();
-//        try (Connection conn = databaseConnection.createDBConnection();
-//             Statement stmt = conn.createStatement();
-//             ResultSet rs = stmt.executeQuery("SELECT * FROM persons")) {
-//            while (rs.next()) {
-//                int id = rs.getInt("id");
-//                persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            databaseConnection.closeConnection();
-//            databaseConnection.closeStatement();
-//        }
-//        return persons;
     }
 
     @Override
@@ -67,80 +50,18 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
                         stmt.setInt(1, id);
                     }
                 });
-
-//        String query = "SELECT * FROM persons WHERE id = ?";
-//        try (Connection conn = databaseConnection.createDBConnection();
-//             PreparedStatement stmt = conn.prepareStatement(query)) {
-//            stmt.setInt(1, id);
-//            ResultSet rs = stmt.executeQuery();
-//
-//            if (rs.next()) {
-//                return new Person(id, rs.getString("name"), rs.getString("phone"));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            databaseConnection.closeConnection();
-//            databaseConnection.closeStatement();
-//        }
-//        return null;
-
     }
 
     @Override
     public List<Person> getByName(String name) {
         return this.executeQueryForMultipleData("SELECT * FROM persons WHERE name LIKE ?",
                 stmt -> stmt.setString(1, "%" + name + "%"));
-
-//        List<Person> persons = new ArrayList<>();
-//        String query = "SELECT * FROM persons WHERE name LIKE ?";
-//        try (Connection conn = databaseConnection.createDBConnection();
-//             PreparedStatement stmt = conn.prepareStatement(query)) {
-//
-//            // Perlu diingat tanda % merupakan wildcard (karakter khusus) dalam operator LIKE
-//            // untuk mewakili nol, satu, atau beberapa karakter.
-//            stmt.setString(1, "%" + name + "%");
-//            ResultSet rs = stmt.executeQuery();
-//
-//            while (rs.next()) {
-//                persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            databaseConnection.closeConnection();
-//            databaseConnection.closeStatement();
-//        }
-//        return persons;
     }
 
     @Override
     public List<Person> getByPhone(String phone) {
         return this.executeQueryForMultipleData("SELECT * FROM persons WHERE phone LIKE ?",
                 stmt -> stmt.setString(1, "%" + phone + "%"));
-
-//        List<Person> persons = new ArrayList<>();
-//        String query = "SELECT * FROM persons WHERE phone LIKE ?";
-//
-//        try (Connection conn = databaseConnection.createDBConnection();
-//             PreparedStatement stmt = conn.prepareStatement(query)) {
-//
-//            stmt.setString(1, "%" + phone + "%");
-//            ResultSet rs = stmt.executeQuery();
-//
-//            while (rs.next()) {
-//                persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getString("phone")));
-//            }
-//            return persons;
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            databaseConnection.closeConnection();
-//            databaseConnection.closeStatement();
-//        }
-//        return persons;
     }
 
     @Override
@@ -152,26 +73,6 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
                     stmt.setString(2, person.getPhone());
                 });
         return new Person(generatedKey, person.getName(), person.getPhone());
-
-//        String query = "INSERT INTO persons (name, phone) VALUES (?, ?)";
-//        try (Connection conn = databaseConnection.createDBConnection();
-//             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-//            stmt.setString(1, person.getName());
-//            stmt.setString(2, person.getPhone());
-//            stmt.executeUpdate();
-//
-//            ResultSet generatedKeys = stmt.getGeneratedKeys();
-//            if (generatedKeys.next()) {
-//                person = new Person(generatedKeys.getInt(1), person.getName(), person.getPhone());
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            databaseConnection.closeConnection();
-//            databaseConnection.closeStatement();
-//        }
-//        return person;
     }
 
     @Override
@@ -185,40 +86,12 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
                 });
 
         return person;// sepertinya ini tidak perlu, dengan ubah return valuenya jadi void.
-
-//        String query = "UPDATE persons SET name = ?, phone = ? WHERE id = ?";
-//        try (Connection conn = databaseConnection.createDBConnection();
-//             PreparedStatement stmt = conn.prepareStatement(query)) {
-//            stmt.setString(1, person.getName());
-//            stmt.setString(2, person.getPhone());
-//            stmt.setInt(3, person.getId());
-//            stmt.executeUpdate();
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            databaseConnection.closeConnection();
-//            databaseConnection.closeStatement();
-//        }
-//        return person;
     }
 
     @Override
     public void deleteById(int id) {
         executeDelete("DELETE FROM persons WHERE id = ?",
                 stmt -> stmt.setInt(1, id));
-
-//        String query = "DELETE FROM persons WHERE id = ?";
-//        try (Connection conn = databaseConnection.createDBConnection();
-//             PreparedStatement stmt = conn.prepareStatement(query)) {
-//            stmt.setInt(1, id);
-//            stmt.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            databaseConnection.closeConnection();
-//            databaseConnection.closeStatement();
-//        }
     }
 
     @Override
