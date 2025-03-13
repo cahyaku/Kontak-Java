@@ -19,7 +19,7 @@ public class App {
         PersonService personService = new PersonService();
         int choice;
         do {
-            System.out.println("*********** \uD81A\uDE06\uD81A\uDE06 KontakJava V1 (In Memory) \uD81A\uDE06\uD81A\uDE06 ***********");
+            System.out.println("*********** \uD81A\uDE06\uD81A\uDE06 KontakJava V3 (In Memory) \uD81A\uDE06\uD81A\uDE06 ***********");
 
             System.out.println("1. Show all persons");
             System.out.println("2. Search person");
