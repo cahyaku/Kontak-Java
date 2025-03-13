@@ -23,7 +23,7 @@ public abstract class BaseRepository<T> {
      * Jika prepareStatement(query, stmt.RETURN_GENERATE_KEYS), parameter ini -> stmt.RETURN_GENERATE_KEYS
      * yang akan mengabil key  yang dibuat secara otomatis, ini digunakan  untuk pernyataan INSERT INTO (untuk menambahkan data baru ke dalam tabel yang sudah ada).
      * ---------
-     * 2). Abstract class dapat di perluas oleh subkelas, sehingga kelas abstrak akan memiliki perilaku umum yang dapat diwariskan
+     * 2). Abstract class dapat di perluas oleh subkelas, sehingga kelas abstrak akan memiliki perilaku umum yang dapat diwariskan ke child kelasnya.
      * 3). Kelas abstract hanya memiliki kerangka tanpa detail, jadi detailnya akan diisi oleh turunannya.
      */
 
@@ -51,7 +51,7 @@ public abstract class BaseRepository<T> {
                 setter.setValues(stmt);
             }
 
-            ResultSet rs = stmt.executeQuery(); // dan posisi ini juga mempengaruhi.
+            ResultSet rs = stmt.executeQuery(); // posisi ini juga mempengaruhi.
             // Karena jika dilakukan sebelum setter : No value specified for parameter 1 :)
 
             if (action != null) {
@@ -60,7 +60,6 @@ public abstract class BaseRepository<T> {
         } catch (SQLException e) {
             e.printStackTrace(); // ini untuk menangkan exception ketika terjadi error saat createDBConnetion.
         }
-//        return null;
     }
 
     /**
