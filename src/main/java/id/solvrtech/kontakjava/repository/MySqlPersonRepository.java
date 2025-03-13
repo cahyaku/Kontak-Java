@@ -2,14 +2,15 @@ package id.solvrtech.kontakjava.repository;
 
 import id.solvrtech.kontakjava.entity.Person;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Saat extends dari BaseRepository bagian<T> wajib di isi dengan entity atau model class repository, sehingga modelnya adalah person.
+ * Saat extends dari BaseRepository bagian<T> wajib di isi dengan entity atau model class repository,
+ * sehingga modelnya adalah person.
  */
 public class MySqlPersonRepository extends BaseRepository<Person> implements PersonRepository {
 
@@ -70,14 +71,17 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
                 "INSERT INTO persons (name, phone) VALUES (?, ?)",
                 stmt -> {
                     stmt.setString(1, person.getName());
-                    stmt.setString(2, person.getPhone());
+                    String phoneNumber = (person.getPhone().startsWith("+62")) ?
+                            person.getPhone().replaceFirst("\\+62", "0") :
+                            person.getPhone();
+                    stmt.setString(2, phoneNumber);
                 });
         return new Person(generatedKey, person.getName(), person.getPhone());
     }
 
     @Override
     public Person update(int id, Person person) {
-        // Bagaian ini tidak bisa di return langsung, ya karena return value dari method update adalah object person.
+        // Bagian ini tidak bisa di return langsung, ya karena return value dari method update adalah object person.
         this.executeUpdate("UPDATE persons SET name = ?, phone = ? WHERE id = ?",
                 stmt -> {
                     stmt.setString(1, person.getName());
@@ -85,7 +89,7 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
                     stmt.setInt(3, id);
                 });
 
-        return person;// sepertinya ini tidak perlu, dengan ubah return valuenya jadi void.
+        return person;// Sepertinya ini tidak perlu, dengan ubah return valuenya jadi void.
     }
 
     @Override
@@ -103,29 +107,18 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
             query = "SELECT COUNT(*) AS count FROM persons WHERE phone = ?";
         }
 
-        try (Connection conn = databaseConnection.createDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, phoneNumber);
-
+        List<Integer> temp = new ArrayList<Integer>(1);
+        this.executeQuery(query, stmt -> {
+            stmt.setString(1, (phoneNumber));
             if (id != null) {
-                stmt.setInt(2, id); // Jika ada idnya, baru set statement id-nya.
+                stmt.setInt(2, id);
             }
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                int count = rs.getInt("count");
-                return count > 0; // Mengembalikan nilai true jika ada satu nomor tlpn yang benar.
-            } else {
-                return false;
+        }, resultSet -> {
+            if (resultSet.next()) {
+                temp.add(resultSet.getInt("count"));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnection.closeConnection();
-            databaseConnection.closeStatement();
-        }
-        return false;
+        });
+        return temp.get(0) > 0;
     }
 
     @Override

@@ -55,10 +55,10 @@ public abstract class BaseRepository<T> {
             // Karena jika dilakukan sebelum setter : No value specified for parameter 1 :)
 
             if (action != null) {
-                action.perform(rs); // ini belum tau apa fungsi dan kegunaanya (mungkin menamoung rs dari intercaface ResultSetAction).
+                action.perform(rs); // ini belum tau apa fungsi dan kegunaanya (mungkin menampung rs dari intercaface ResultSetAction).
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // ini untuk menangkan exception ketika terjadi error saat createDBConnetion.
+            e.printStackTrace(); // ini untuk menangkap exception ketika terjadi error saat createDBConnetion.
         }
     }
 
@@ -144,7 +144,7 @@ public abstract class BaseRepository<T> {
                 setter.setValues(stmt);
             }
 
-            stmt.executeUpdate(); // ingat ini dilakukan setelah
+            stmt.executeUpdate(); // Ingat ini dilakukan setelah setter, ya kalau sebelum set, apa yang di upadate.
 
             ResultSet generatedKeys = stmt.getGeneratedKeys();
             if (generatedKeys.next()) {
