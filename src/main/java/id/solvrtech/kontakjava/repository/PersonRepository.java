@@ -20,4 +20,6 @@ public interface PersonRepository {
     void deleteById(int id);
 
     boolean doesPhoneNumberExists(Integer id, String phoneNumber);
+
+    List<Person> getByNameOrPhone(String search);
 }

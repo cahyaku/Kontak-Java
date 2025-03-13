@@ -71,10 +71,7 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
                 "INSERT INTO persons (name, phone) VALUES (?, ?)",
                 stmt -> {
                     stmt.setString(1, person.getName());
-                    String phoneNumber = (person.getPhone().startsWith("+62")) ?
-                            person.getPhone().replaceFirst("\\+62", "0") :
-                            person.getPhone();
-                    stmt.setString(2, phoneNumber);
+                    stmt.setString(2, person.getPhone());
                 });
         return new Person(generatedKey, person.getName(), person.getPhone());
     }
@@ -119,6 +116,16 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
             }
         });
         return temp.get(0) > 0;
+    }
+
+    @Override
+    public List<Person> getByNameOrPhone(String search) {
+        String query = "SELECT * FROM persons WHERE name like ? OR phone like ?";
+        return this.executeQueryForMultipleData(
+                query, stmt -> {
+                    stmt.setString(1, "%" + search + "%");// ini untuk name
+                    stmt.setString(2, "%" + search + "%");// ini untuk phone
+                });
     }
 
     @Override

@@ -149,15 +149,8 @@ public class App {
                  * startsWith("+62") : Untuk mengecek apakah string yang di dapat dari getPhone() diawali dengan substring +62.
                  * person.getPhone().replaceFirst("\\+62", "0") : ini untuk mengganti substring +62 dengan 0.
                  */
-                String phoneNumber = (person.getPhone().startsWith("+62")) ?
-                        person.getPhone().replaceFirst("\\+62", "0") :
-                        person.getPhone();
 
-
-                // Removes the first two characters ("+62"), ini tidak bisa karena di DB ada yang disimpan tanpa +62.
-                // String phoneNumberWithoutCode = phoneNumberWithCode.substring(2);
-
-                System.out.println("    Phone number: " + phoneNumber);
+                System.out.println("    Phone number: " + person.getPhone());
                 System.out.println("    Id: " + person.getId());
                 number++;
             }
@@ -178,11 +171,20 @@ public class App {
 
             // Periksa apakah phone numbernya numerik
             if (isValidPhoneNumber(phone)) {
-                return phone; // Jika benar numerik kembalikan phone numbernya.
+                return formatPhoneNumber(phone);
+//                return phone; // Jika benar numerik kembalikan phone numbernya.
             } else {
                 System.out.println("Please enter a valid phone number."
                         + " Phone numbers start with 0 or +62 with a total length of lees than 16 characters.");
             }
         }
     }
+
+    public String formatPhoneNumber(String phone) {
+        String phoneNumber;
+        return phoneNumber = (phone.startsWith("+62")) ?
+                phone.replaceFirst("\\+62", "0") :
+                phone;
+    }
+
 }

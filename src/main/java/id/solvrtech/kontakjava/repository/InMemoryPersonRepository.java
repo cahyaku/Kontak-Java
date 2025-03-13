@@ -85,4 +85,11 @@ public class InMemoryPersonRepository implements PersonRepository {
         }
         return false;
     }
+
+    @Override
+    public List<Person> getByNameOrPhone(String search) {
+        return persons.stream().
+                filter(person -> person.getName().contains(search) || person.getPhone().contains(search))
+                .collect(Collectors.toList());
+    }
 }

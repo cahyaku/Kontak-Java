@@ -1,7 +1,7 @@
 package id.solvrtech.kontakjava.service;
 
 import id.solvrtech.kontakjava.entity.Person;
-import id.solvrtech.kontakjava.repository.MySqlPersonRepository;
+import id.solvrtech.kontakjava.repository.InMemoryPersonRepository;
 import id.solvrtech.kontakjava.repository.PersonRepository;
 
 import java.util.ArrayList;
@@ -11,14 +11,12 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
-//    DatabaseConnection databaseConnection;
-
     public PersonService() {
         // 1. Using person repository (InMemory)
-//        this.personRepository = new InMemoryPersonRepository();
+        this.personRepository = new InMemoryPersonRepository();
 
         // 2. Using MySql
-        this.personRepository = new MySqlPersonRepository();
+//        this.personRepository = new MySqlPersonRepository();
     }
 
     public List<Person> getAll() {
@@ -57,14 +55,9 @@ public class PersonService {
     }
 
     public ArrayList<Person> search(String searchInput) {
-
-        List<Person> personByName = personRepository.getByName(searchInput);
-        List<Person> personByPhone = personRepository.getByPhone(searchInput);
-
-        if (!personByName.isEmpty()) {
-            return (ArrayList<Person>) personByName;
-        } else if (!personByPhone.isEmpty()) {
-            return (ArrayList<Person>) personByPhone;
+        List<Person> persons = personRepository.getByNameOrPhone(searchInput);
+        if (!persons.isEmpty()) {
+            return (ArrayList<Person>) persons;
         }
         return null;
     }
