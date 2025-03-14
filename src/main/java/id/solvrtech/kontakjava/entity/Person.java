@@ -6,6 +6,13 @@ public class Person {
     private String name;
     private String phone;
 
+    /**
+     * Ini adalah constructor dalam java.
+     *
+     * @param id
+     * @param name
+     * @param phone
+     */
     public Person(int id, String name, String phone) {
         this.id = id;
         this.name = name;
