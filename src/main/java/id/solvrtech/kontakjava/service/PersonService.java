@@ -28,8 +28,7 @@ public class PersonService {
     }
 
     public boolean create(Person person) {
-        boolean checkPhoneNumber = personRepository.doesPhoneNumberExists(null, person.getPhone());
-        if (checkPhoneNumber) {
+        if (personRepository.doesPhoneNumberExists(null, person.getPhone())) {
             return true;
         }
 
@@ -38,8 +37,13 @@ public class PersonService {
     }
 
     public boolean update(Person updatePerson, String name, String phone) {
-        boolean checkPhoneNumber = personRepository.doesPhoneNumberExists(updatePerson.getId(), phone);
-        if (checkPhoneNumber) {
+//        boolean checkPhoneNumber = personRepository.doesPhoneNumberExists(updatePerson.getId(), phone);
+//        if (checkPhoneNumber) {
+//            return true;
+//        }
+
+        // Ini hasil setelah inisiasi variabel di atas dihilangkan.
+        if (personRepository.doesPhoneNumberExists(updatePerson.getId(), phone)) {
             return true;
         }
 
@@ -64,9 +68,6 @@ public class PersonService {
 
     public boolean isEmpty() {
         List<Person> persons = this.getAll();
-        if (persons.isEmpty()) {
-            return true;
-        }
-        return false;
+        return persons.isEmpty();
     }
 }

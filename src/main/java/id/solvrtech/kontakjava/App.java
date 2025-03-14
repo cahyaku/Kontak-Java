@@ -142,16 +142,10 @@ public class App {
         } else {
             for (Person person : persons) {
                 // Untuk mendapatkan namenya maka diperlukan mengakases method getternya.
-                System.out.println(number + ".  Name: " + person.getName().toLowerCase(Locale.ROOT));
-
-                /**
-                 * Ini untuk menghilangkan +62 saat di tampilkan.
-                 * startsWith("+62") : Untuk mengecek apakah string yang di dapat dari getPhone() diawali dengan substring +62.
-                 * person.getPhone().replaceFirst("\\+62", "0") : ini untuk mengganti substring +62 dengan 0.
-                 */
-
+                System.out.println(number + ".  Id:" + person.getId());
+                System.out.println("    Name: " + person.getName().toLowerCase(Locale.ROOT));
                 System.out.println("    Phone number: " + person.getPhone());
-                System.out.println("    Id: " + person.getId());
+                System.out.println(" ");
                 number++;
             }
         }
@@ -172,7 +166,6 @@ public class App {
             // Periksa apakah phone numbernya numerik
             if (isValidPhoneNumber(phone)) {
                 return formatPhoneNumber(phone);
-//                return phone; // Jika benar numerik kembalikan phone numbernya.
             } else {
                 System.out.println("Please enter a valid phone number."
                         + " Phone numbers start with 0 or +62 with a total length of lees than 16 characters.");
@@ -180,8 +173,14 @@ public class App {
         }
     }
 
+    /**
+     * Ini untuk menghilangkan +62 saat di tampilkan.
+     * startsWith("+62") : Untuk mengecek apakah string yang di dapat dari getPhone() diawali dengan substring +62.
+     * person.getPhone().replaceFirst("\\+62", "0") : ini untuk mengganti substring +62 dengan 0.
+     */
     public String formatPhoneNumber(String phone) {
         String phoneNumber;
+
         return phoneNumber = (phone.startsWith("+62")) ?
                 phone.replaceFirst("\\+62", "0") :
                 phone;

@@ -115,7 +115,7 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
                 temp.add(resultSet.getInt("count"));
             }
         });
-        return temp.get(0) > 0;
+        return temp.getFirst() > 0;
     }
 
     @Override
