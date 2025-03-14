@@ -11,6 +11,13 @@ import java.util.List;
 /**
  * Saat extends dari BaseRepository bagian<T> wajib di isi dengan entity atau model class repository,
  * sehingga modelnya adalah person.
+ * --------
+ * Ini lah yang akan memudahkan jika ada banyak repository lain, mungkin seperti hobby, vehicle dan lain-nya,
+ * jadi kita tidak perlu khawatir hasil valunya bisa salah, karena tipenya akan di diisi di masing-masing repository.
+ * ---------
+ * Selain itu pasti akan ada method yang sama yakni getAll(), getById, create(), update(), delete(), dll.
+ * Yang umumnya pasti akan dimiliki oleh setiap entity seperti hobby dan vehicle jika ada.
+ * Dengan demikian code akan jauh lebih singkat dan mudah untuk dibaca, (ini akan meminimalisir terjadinya dipulikasi).
  */
 public class MySqlPersonRepository extends BaseRepository<Person> implements PersonRepository {
 
@@ -45,6 +52,8 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
     @Override
     public Person getById(int id) {
         return this.executeQueryForSingleData("SELECT * FROM persons WHERE id = ?",
+                // new PreparedStatementSetter() -> ini sebetulnya cara pengganggilan untuk mengisi stmt.setInt, string dll.
+                // tapi cara singkatnya ya seperti di bawah.
                 new PreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement stmt) throws SQLException {
@@ -55,6 +64,7 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
 
     @Override
     public List<Person> getByName(String name) {
+        // ini cara simple mengisi prepare statement, jika lebih dari satu contohnya ada di bawah.
         return this.executeQueryForMultipleData("SELECT * FROM persons WHERE name LIKE ?",
                 stmt -> stmt.setString(1, "%" + name + "%"));
     }
@@ -79,6 +89,8 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
     @Override
     public Person update(int id, Person person) {
         // Bagian ini tidak bisa di return langsung, ya karena return value dari method update adalah object person.
+        // bagian ini juga merupakan contoh mengisi prepared statement dengan lebih dari 1 stmt.
+        // jadi pakai stmt -> { stmt.set value-nya apa}
         this.executeUpdate("UPDATE persons SET name = ?, phone = ? WHERE id = ?",
                 stmt -> {
                     stmt.setString(1, person.getName());
@@ -105,6 +117,7 @@ public class MySqlPersonRepository extends BaseRepository<Person> implements Per
         }
 
         List<Integer> temp = new ArrayList<Integer>(1);
+        // Ini contoh mengisi parameter untuk ResultAction action.
         this.executeQuery(query, stmt -> {
             stmt.setString(1, (phoneNumber));
             if (id != null) {

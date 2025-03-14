@@ -6,6 +6,12 @@ import java.util.List;
 
 /**
  * Ini adalah class yang memiliki parameter, class ini dapat menerima tipe objek yang tidak ditentukan.
+ * <T>adalah huruf konvensional yang merupakan singkatan dari "Type".
+ * <T>mengacu pada konsep Generics di Java. Anda dapat menggunakan huruf apa saja, tetapi <T>lebih disukai.
+ * --------
+ * Tujuan menggunakan paramter T ini sebenarnya ketika ada banyak entity, semisal ada hobby, vehicle, dll.
+ * Nah T ini jelas akan sesuai  dengan entity yang dikirimkan, pada kasus kali ini value yang di hasilkan adalah person
+ * ya karena memang person, dan contoh penggunaannya ada di MySqlPersonRepository.
  *
  * @param <T>
  */
@@ -25,6 +31,12 @@ public abstract class BaseRepository<T> {
      * ---------
      * 2). Abstract class dapat di perluas oleh subkelas, sehingga kelas abstrak akan memiliki perilaku umum yang dapat diwariskan ke child kelasnya.
      * 3). Kelas abstract hanya memiliki kerangka tanpa detail, jadi detailnya akan diisi oleh turunannya.
+     * 4). Dalam java kita wajib mengecek apakah isi dari sebuah parameter null/ tidak,
+     * karena di Java semua tipe data bisa saja bernilai null.
+     * ----------
+     * Perbedaan antara method  T executeQueryForSingleData() dengan List<T> executeQueryForMultipleData adalah:
+     * Hasil datanya, dimana T akan menghasilkan sesuai dengan tipe object yang diisi ,misalnya person,
+     * yang dipakai pada method Person getById(). Jadi jika ada seperti Hobby getById(), hasilnya adalah entity hobby.
      */
 
     /**
